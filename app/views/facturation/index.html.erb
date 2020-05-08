@@ -1,1 +1,22 @@
 <h2>Facturacion</h2>
+<div>
+  <%= @project %>
+</div>
+<div>
+  <% for @user in @users %>
+    <%= @user %>
+  <% end  %>
+</div>
+<div>
+  <%= @current %>
+</div>
+<div>
+  <% for @member in @members %>
+    <%= @member %>
+  <% end  %>
+</div>
+<div>
+  <% for @entry in @time_entries %>
+    <%= @entry %>
+  <% end  %>
+</div>
