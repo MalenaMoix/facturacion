@@ -1,22 +1,78 @@
-<h2>Facturacion</h2>
-<div>
-  <%= @project %>
+<!-- Importacion del archivo css -->
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'facturation', :plugin => 'facturacion_proyecto', media: 'all' %>
+<% end %>
+<!-- Logo Folder IT -->
+<h2>Facturaci&oacute;n <%= @project %></h2>
+<div class="facturation-folder-logo">
+  <%= image_tag('folder-it-logo-header-blog.png', :plugin => 'facturacion_proyecto') %>
 </div>
+<!-- Comentarios -->
 <div>
-  <% for @user in @users %>
-    <%= @user %>
-  <% end  %>
+  <p class="comment"><span>Comentarios sobre la facturaci&oacute;n del proyecto:</span><br/>
+    <br/>
+    <textarea class="comment" id="facturation_comments" cols="100" rows="3"></textarea>
+  </p>
+  <script>
+    $('textarea').autoResize();
+  </script>
+  <br/>
 </div>
-<div>
-  <%= @current %>
+<!-- Fecha -->
+<div class="mes">
+  <% now = DateTime.now %>
+  <label for="month">Mes/A&ntilde;o:</label>
+  <select name="change_month" id="month">
+    <% @months.each do |m| %>
+      <option value="<%= DateTime.new(m.tyear, m.tmonth) %>"><%= m.month_name(m.tmonth) + '/' + m.tyear.to_s %></option>
+    <% end %>
+    <% if @months.where(:tmonth => now.month, :tyear => now.year).length < 1 %>
+      <option value="<%= DateTime.new(now.year, now.month, 1) %>" selected><%= TimeEntry.month_name(now.month) + '/' + now.year.to_s %></option>
+    <% end %>
+  </select>
 </div>
-<div>
-  <% for @member in @members %>
-    <%= @member %>
-  <% end  %>
+<br/>
+<!-- Tabla facturacion -->
+<div style="overflow-x:auto;">
+  <table class="population" style="width:70%">
+    <tr>
+      <th>Persona</th>
+      <th>Rate Hora</th>
+      <th>Horas trabajadas</th>
+      <th>Comentarios</th>
+      <th>Total</th>
+      <th>Editable</th>
+      <th>Log</th>
+    </tr>
+    <% for @empleado in @empleados %>
+      <tr>
+        <td> <%= @empleado %></td>
+        <td>20</td>
+        <td>160</td>
+        <td>Full time</td>
+        <td>1600</td>
+        <td><input type="checkbox" id="population"></td>
+        <td contenteditable='true'></td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
 </div>
-<div>
-  <% for @entry in @time_entries %>
-    <%= @entry %>
-  <% end  %>
+<!-- Other concepts -->
+<div clas="div_concepts">
+  <p class="p_concepts">Otros gastos:
+    <span>
+      <textarea placeholder="Motivo/s" class="text_area_concepts" cols="50" rows="2"></textarea>
+      <textarea placeholder="Monto $" class="text_area_concepts_monto" cols="10" rows="2"></textarea>
+      <textarea style="margin-left: 320px;" class="text_area_total" cols="15" rows="2" readonly="true">Total</textarea>
+      <textarea class="total_calculated" cols="10" rows="2" readonly="true">$13000</textarea>
+    </span>
+  </p>
 </div>
+<!-- Calculo total $ -->
+<!-- <div class="div_total">
+  <span class="span_total">
+    <textarea class="text_area_total" cols="10" rows="2" readonly="true">Total</textarea>
+    <textarea class="total_calculated" cols="10" rows="2" readonly="true">$8000</textarea>
+  </span>
+</div> -->

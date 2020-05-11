@@ -1,0 +1,96 @@
+/* Comentario */
+
+.facturation-folder-logo img {
+    width: 28%;
+}
+
+td {
+    border: 1px solid grey;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    font-size: 10pt;
+    width: 30px;
+    padding: 0px 2px !important;
+    margin: 0px !important;
+    height: 18px;
+}
+
+th {
+    height: 30px;
+    padding: 0px 2px !important;
+    margin: 0px !important;
+    border: 1px solid grey;
+}
+
+th,
+td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.population {
+    border: 1px solid grey;
+    border-collapse: collapse;
+    padding: 0;
+}
+
+.population th {
+    color: white;
+    background-color: #783d64;
+}
+
+.checkbox {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.div_total {
+    align-items: center;
+    vertical-align: middle;
+}
+
+.div_concepts {
+    align-items: center;
+    vertical-align: middle;
+}
+
+p {
+    font-family: 'Segoe UI';
+    font-size: 14px;
+}
+
+label {
+    font-family: 'Segoe UI';
+    font-size: 14px;
+}
+
+textarea {
+    background-color: transparent;
+    resize: none;
+    font-family: 'Segoe UI';
+    font-size: 14px;
+}
+
+.text_area_concepts {
+    vertical-align: middle;
+}
+
+.text_area_concepts_monto {
+    vertical-align: middle;
+}
+
+.text_area_total {
+    color: white;
+    background-color: #783d64;
+    font-style: bold;
+    vertical-align: middle;
+    text-align: justify;
+    text-align-last: center;
+}
+
+.total_calculated {
+    vertical-align: middle;
+    text-align: justify;
+    text-align-last: center;
+}
