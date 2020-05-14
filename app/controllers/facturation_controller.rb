@@ -2,19 +2,8 @@ class FacturationController < ApplicationController
 
     def index
         @project = Project.find(params[:project_id])
-
-        @users = User.all
-
-        @members = @project.members.all
-
         @facturations = Facturation.all
-
-        ids = []
-        for @member in @members
-         ids.push @member[:user_id]
-        end
-
-        @empleados = User.where(id: ids)
+        @empleados_facturation = ProjectAssignedUser.all
        
 
         @current = User.current

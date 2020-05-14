@@ -44,28 +44,28 @@
       <th>Editable</th>
       <th>Log</th>
     </tr>
-    <% for @empleado in @empleados %>
+    <% for @empleado in @empleados_facturation %>
       <tr>
-        <td> <%= @empleado %></td>
-        <td>20</td>
-        <td>160</td>
-        <td>Full time</td>
-        <td>1600</td>
-        <td><input type="checkbox" id="population"></td>
-        <td contenteditable='true'></td>
+        <td class="table-user-name" id="table-user-name"><%= @empleado.user %></td>
+        <td class="table-hour-rate" id="table-hour-rate"><%= @empleado.hour_rate %></td>
+        <td class="table-horas-trabajadas" id="table-horas-trabajadas"></td>
+        <td class="table-comment" id="table-comment"><%= @empleado.comment %></td>
+        <td class="table-total" id="table-total"></td>
+        <td class="table-checkbox" id="table-checkbox"><input type="checkbox" id="population"></td>
+        <td class="table-editable" id="table-editable" contenteditable='true'></td>
       </tr>
     <% end %>
   </table>
   <br/>
 </div>
 <!-- Other concepts -->
-<div clas="div_concepts">
+<div class="div_concepts">
   <p class="p_concepts">Otros gastos:
     <span>
-      <textarea placeholder="Motivo/s" class="text_area_concepts" cols="50" rows="2"></textarea>
-      <textarea placeholder="Monto $" class="text_area_concepts_monto" cols="10" rows="2"></textarea>
-      <textarea style="margin-left: 320px;" class="text_area_total" cols="15" rows="2" readonly="true">Total</textarea>
-      <textarea class="total_calculated" cols="10" rows="2" readonly="true">$13000</textarea>
+      <textarea placeholder="Motivo/s" class="text_area_concepts" cols="50" rows="1"></textarea>
+      <textarea placeholder="Monto $" class="text_area_concepts_monto" cols="10" rows="1"></textarea>
+      <textarea style="margin-left: 320px;" class="text_area_total" cols="15" rows="1" readonly="true">Total</textarea>
+      <textarea class="total_calculated" cols="10" rows="1" readonly="true"></textarea>
     </span>
   </p>
 </div>
