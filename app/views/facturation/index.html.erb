@@ -13,9 +13,6 @@
     <br/>
     <textarea class="comment" id="facturation_comments" cols="100" rows="3"></textarea>
   </p>
-  <script>
-    $('textarea').autoResize();
-  </script>
   <br/>
 </div>
 <!-- Fecha -->
@@ -34,7 +31,7 @@
 <br/>
 <!-- Tabla facturacion -->
 <div style="overflow-x:auto;">
-  <table class="population" style="width:70%">
+  <table class="population">
     <tr>
       <th>Persona</th>
       <th>Rate Hora</th>
@@ -46,33 +43,67 @@
     </tr>
     <% for @empleado in @empleados_facturation %>
       <tr>
-        <td class="table-user-name" id="table-user-name"><%= @empleado.user %></td>
-        <td class="table-hour-rate" id="table-hour-rate"><%= @empleado.hour_rate %></td>
-        <td class="table-horas-trabajadas" id="table-horas-trabajadas"></td>
-        <td class="table-comment" id="table-comment"><%= @empleado.comment %></td>
-        <td class="table-total" id="table-total"></td>
-        <td class="table-checkbox" id="table-checkbox"><input type="checkbox" id="population"></td>
-        <td class="table-editable" id="table-editable" contenteditable='true'></td>
+        <td class="table-user-name" id="table-user-name"> <%= @empleado.user %> </td>
+        <td class="table-hour-rate" id="table-hour-rate"> <%= @empleado.hour_rate %> </td>
+        <td class="table-horas-trabajadas" id="table-horas-trabajadas"> </td>
+        <td class="table-comment" id="table-comment"> <%= @empleado.comment %> </td>
+        <td class="table-total" id="table-total"> <input class="input-total" type="text" name="total" readonly> </td>
+        <td class="table-checkbox" id="table-checkbox"> <input type="checkbox" id="population"> </td>
+        <td class="table-log" id="table-log"> <input class="input-log" type="text" name="logged-by" readonly> </td>
       </tr>
     <% end %>
   </table>
-  <br/>
 </div>
+<br/>
 <!-- Other concepts -->
 <div class="div_concepts">
-  <p class="p_concepts">Otros gastos:
-    <span>
-      <textarea placeholder="Motivo/s" class="text_area_concepts" cols="50" rows="1"></textarea>
-      <textarea placeholder="Monto $" class="text_area_concepts_monto" cols="10" rows="1"></textarea>
-      <textarea style="margin-left: 320px;" class="text_area_total" cols="15" rows="1" readonly="true">Total</textarea>
-      <textarea class="total_calculated" cols="10" rows="1" readonly="true"></textarea>
-    </span>
-  </p>
-</div>
-<!-- Calculo total $ -->
-<!-- <div class="div_total">
-  <span class="span_total">
-    <textarea class="text_area_total" cols="10" rows="2" readonly="true">Total</textarea>
-    <textarea class="total_calculated" cols="10" rows="2" readonly="true">$8000</textarea>
+  <span>
+    <p class="p_concepts"> Otros gastos: </p>
+    <textarea placeholder="Motivo/s" class="text_area_concepts" cols="80" rows="1"> </textarea>
+    <textarea placeholder="Monto $" class="text_area_concepts_monto" cols="10" rows="1"> </textarea>
   </span>
-</div> -->
+</div>
+<br/>
+<!-- Monto total -->
+<div class="monto-total">
+  <span class="span-monto-total">
+    <button class="button_total" disabled> Total: </button>
+    <textarea class="total_calculated" readonly> </textarea>
+  </span>
+</div>
+<br/>
+<br/>
+<div class="buttons-facturacion">
+  <span>
+    <button class="button-facturar"> Facturar </button>
+    <button class="button-guardar"> Guardar </button>
+    <button class="button-descargar-excel"> Descargar como Excel </button>
+  </span>
+</div>
+<script type="text/javascript">
+  $('table tr').click( function() {
+    var tr = $(this).closest('tr');
+    var check = $(this).find('input[type=checkbox]');
+  
+    if (check.is(":checked")){
+      tr.find(".input-total").removeAttr("readonly");
+      tr.find(".input-log").removeAttr("readonly");
+    } else {
+      tr.find(".input-total").attr("readonly", true);
+      tr.find(".input-log").attr("readonly", true);
+    }
+  });
+</script>
+<script type="text/javascript">
+  $(document).on('click', '.button-facturar', function () {
+  
+  });
+  
+  $(document).on('click', '.button-guardar', function () {
+  
+  });
+  
+  $(document).on('click', '.button-descargar-excel', function () {
+  
+  });
+</script>

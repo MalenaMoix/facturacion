@@ -3,7 +3,7 @@ class FacturationController < ApplicationController
     def index
         @project = Project.find(params[:project_id])
         @facturations = Facturation.all
-        @empleados_facturation = ProjectAssignedUser.all
+        @empleados_facturation = ProjectAssignedUser.where(:project_id => @project[:id])
        
 
         @current = User.current
