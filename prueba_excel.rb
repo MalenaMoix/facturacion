@@ -1,3 +1,6 @@
+# Fue solo para probar
+# No uso Spreadsheet, voy a usar RubyXL
+
 require 'spreadsheet'
 
 book = Spreadsheet::Workbook.new

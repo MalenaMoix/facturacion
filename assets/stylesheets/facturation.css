@@ -5,40 +5,49 @@
 }
 
 td {
-    border: 1px solid grey;
+    border: 1px solid lightgray;
     text-align: center;
     padding: 0;
     margin: 0;
     font-size: 10pt;
     width: 30px;
     padding: 0px 2px !important;
-    margin: 0px !important;
     height: 18px;
-}
-
-th {
-    height: 30px;
-    padding: 0px 2px !important;
-    margin: 0px !important;
-    border: 1px solid grey;
 }
 
 th,
 td {
     text-align: center;
     vertical-align: middle;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.population input {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .population {
-    border: 1px solid grey;
+    border: 1px solid lightgray;
     border-collapse: collapse;
     width: 80%;
     padding: 0;
+    font-family: arial;
+    background-color: #f9f9f9;
 }
 
 .population th {
     color: white;
     background-color: #783d64;
+    height: 25px;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0px !important;
+    border-collapse: collapse;
+    font-size: 14px;
+    width: fit-content;
 }
 
 .checkbox {
