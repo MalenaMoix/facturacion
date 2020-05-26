@@ -5,7 +5,6 @@
 }
 
 td {
-    border: 1px solid lightgray;
     text-align: center;
     padding: 0;
     margin: 0;
@@ -29,12 +28,22 @@ td {
 }
 
 .population {
-    border: 1px solid lightgray;
     border-collapse: collapse;
     width: 80%;
     padding: 0;
     font-family: arial;
     background-color: #f9f9f9;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.population tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.population tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
 }
 
 .population th {
@@ -48,6 +57,10 @@ td {
     border-collapse: collapse;
     font-size: 14px;
     width: fit-content;
+}
+
+.population tbody tr:last-of-type {
+    border-bottom: 2px solid #783d64;
 }
 
 .checkbox {
@@ -90,17 +103,37 @@ textarea {
     font-size: 14px;
 }
 
-.button_total {
+.button_compute_total {
     color: white;
     background-color: #783d64;
     font-family: sans-serif;
-    font-size: 16px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    width: 140px;
+    height: 35px;
+    border-radius: 5px;
+    border: #783d64;
+    margin-right: 10px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    cursor: pointer;
+}
+
+.button_compute_total:hover {
+    background-color: #81466e;
+}
+
+.button_total {
+    color: white;
+    background-color: #a72424;
+    font-family: sans-serif;
+    font-size: 15px;
     font-weight: bold;
     text-align: center;
     width: 90px;
-    height: 40px;
+    height: 35px;
     border-radius: 5px;
-    border: #783d64;
+    border: #a72424;
     margin-right: 10px;
 }
 
@@ -110,8 +143,9 @@ textarea {
     font-weight: bold;
     text-align: center;
     width: 90px;
-    height: 40px;
+    height: 35px;
     border-radius: 5px;
+    vertical-align: middle;
 }
 
 .buttons-facturacion {
@@ -129,16 +163,27 @@ textarea {
     font-weight: bold;
     font-size: 13px;
     margin-left: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+.buttons-facturacion button:hover {
+    background-color: #d4d4d4;
 }
 
 .button-descargar-excel {
     margin-left: 40px;
 }
 
-.buttons-facturacion button:hover {
-    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
-}
-
 .input-total {
     width: 70px;
+    text-align: center;
+    vertical-align: middle;
+    background-color: transparent;
+    border: none;
+}
+
+.input-log {
+    background-color: transparent;
+    border: none;
 }

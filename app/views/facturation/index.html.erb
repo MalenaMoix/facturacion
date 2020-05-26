@@ -37,7 +37,7 @@
       <th>Rate Hora</th>
       <th>Horas trabajadas</th>
       <th>Comentarios</th>
-      <th>Total</th>
+      <th>Total ($)</th>
       <th>Editable</th>
       <th class="log">Log</th>
     </tr>
@@ -45,11 +45,11 @@
       <tr class="data">
         <td class="table-user-name" id="table-user-name"> <%= @empleado.user %> </td>
         <td class="table-hour-rate" id="table-hour-rate"> <%= @empleado.hour_rate %> </td>
-        <td class="table-horas-trabajadas" id="table-horas-trabajadas"> </td>
+        <td class="table-horas-trabajadas" id="table-horas-trabajadas"></td>
         <td class="table-comment" id="table-comment"> <%= @empleado.comment %> </td>
-        <td class="table-total" id="table-total"> <input class="input-total" type="text" name="total" readonly> </td>
-        <td class="table-checkbox" id="table-checkbox"> <input type="checkbox" id="population"> </td>
-        <td class="table-log" id="table-log"> <input class="input-log" type="text" name="logged-by" readonly> </td>
+        <td class="table-total" id="table-total"><input class="input-total" type="text" name="total" readonly></td>
+        <td class="table-checkbox" id="table-checkbox"> <input type="checkbox" id="population"></td>
+        <td class="table-log" id="table-log"> <input class="input-log" type="text" name="logged-by" readonly></td>
       </tr>
     <% end %>
   </table>
@@ -59,16 +59,17 @@
 <div class="div_concepts">
   <span>
     <p class="p_concepts"> Otros gastos: </p>
-    <textarea placeholder="Motivo/s" class="text_area_concepts" cols="80" rows="1"> </textarea>
-    <textarea placeholder="Monto $" class="text_area_concepts_monto" cols="10" rows="1"> </textarea>
+    <textarea placeholder="Motivo" class="text_area_concepts" cols="80" rows="1"></textarea>
+    <textarea placeholder="Monto ($)" class="text_area_concepts_monto" cols="10" rows="1"></textarea>
   </span>
 </div>
 <br/>
 <!-- Monto total -->
 <div class="monto-total">
   <span class="span-monto-total">
+    <button class="button_compute_total"> Calcular Total </button>
     <button class="button_total" disabled> Total: </button>
-    <textarea class="total_calculated" readonly> </textarea>
+    <input class="total_calculated" name="total_calculated" readonly>
   </span>
 </div>
 <br/>
@@ -88,9 +89,17 @@
     if (check.is(":checked")){
       tr.find(".input-total").removeAttr("readonly");
       tr.find(".input-log").removeAttr("readonly");
+      tr.find(".input-total").css('background-color', 'white');
+      tr.find(".input-total").css('border-color', '#dddddd');
+      tr.find(".input-log").css('background-color', 'white');
+      tr.find(".input-log").css('border-color', '#dddddd');
     } else {
       tr.find(".input-total").attr("readonly", true);
       tr.find(".input-log").attr("readonly", true);
+      tr.find(".input-total").css('background-color', 'transparent');
+      tr.find(".input-total").css('border', 'none');
+      tr.find(".input-log").css('background-color', 'transparent');
+      tr.find(".input-log").css('border', 'none');
     }
   });
 </script>
@@ -98,7 +107,7 @@
   $(document).ready(function (<% @empleados_facturation %>) {
   
     getHours();
-    computeTotal();
+    computeTableTotal();
   
   
     function getHours () {
@@ -123,8 +132,7 @@
     }
   
   
-    function computeTotal() {
-      console.log("Compute total");
+    function computeTableTotal() {
       var all_rows = $('.data');
   
       all_rows.each(function () {
@@ -134,12 +142,40 @@
         var rate = parseFloat(rate_data.text());
         var hours = parseInt(worked_hours_data.text());
   
-        $(this).find('.input-total').attr('value', '$' + rate*hours);
+        $(this).find('.input-total').attr('value', rate*hours);
       });
     }
   });
 </script>
 <script type="text/javascript">
+  $(document).find('.button_total').hide();
+  $(document).find('.total_calculated').hide();
+  
+  $(document).on('click', '.button_compute_total', function computeTotal() {
+    $(document).find('.button_total').show();
+    $(document).find('.total_calculated').show();
+  
+    var all_rows = $('.data');
+    var total = 0.0;
+  
+    all_rows.each(function () {
+      var input_total = $(this).find('.input-total');
+      var value = input_total.val();
+      total += parseFloat(value);
+    })
+  
+    var other_concepts = $(document).find('.text_area_concepts_monto');
+    var other_concepts_monto = other_concepts.val();
+    if (other_concepts_monto.length != 0) {
+      total += parseFloat(other_concepts_monto);
+    }
+  
+    $(document).find('.total_calculated').attr('value', '$' + total);
+  });
+  
+  
+  
+  //TODO en un futuro cercano
   $(document).on('click', '.button-facturar', function () {
   
   });

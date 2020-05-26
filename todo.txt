@@ -1,0 +1,5 @@
+// FIXME Ver tema de los totales de las tablas, si estan bien los numeros sin el $, porque eso trae problemas despues para sumar (Juan dijo que asi esta bien y se entiende)
+
+// FIXME En la parte de otros gastos, validar si ingresa monto con $, por ahora solo anda si se ingresa el numero solo
+
+// FIXME Ver como bindear los inputs para que no se tenga que apretar el boton calcular total ante cada cambio 
