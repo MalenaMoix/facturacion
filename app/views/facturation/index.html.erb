@@ -42,7 +42,7 @@
       <th class="log">Log</th>
     </tr>
     <% for @empleado in @empleados_facturation %>
-      <tr>
+      <tr class="data">
         <td class="table-user-name" id="table-user-name"> <%= @empleado.user %> </td>
         <td class="table-hour-rate" id="table-hour-rate"> <%= @empleado.hour_rate %> </td>
         <td class="table-horas-trabajadas" id="table-horas-trabajadas"> </td>
@@ -91,6 +91,51 @@
     } else {
       tr.find(".input-total").attr("readonly", true);
       tr.find(".input-log").attr("readonly", true);
+    }
+  });
+</script>
+<script>
+  $(document).ready(function (<% @empleados_facturation %>) {
+  
+    getHours();
+    computeTotal();
+  
+  
+    function getHours () {
+      var all_rows = $('.data');
+      employees_hours = [];
+  
+      <% @empleados_facturation.each do |empleado| %>
+        <% hours = 0.0 %>
+        <% time_entries = TimeEntry.where(:user_id => empleado.user_id, :project_id => empleado.project_id) %>
+  
+        <% for entry in time_entries %>
+          <%= hours += entry.hours %>
+        <% end %>
+        employees_hours.push('<%= hours %>');
+      <% end %>
+  
+      var index = 0;
+      all_rows.each(function () {
+        $(this).find('#table-horas-trabajadas').text(employees_hours[index]);
+        index++;
+      });
+    }
+  
+  
+    function computeTotal() {
+      console.log("Compute total");
+      var all_rows = $('.data');
+  
+      all_rows.each(function () {
+        var rate_data = $(this).find('#table-hour-rate');
+        var worked_hours_data = $(this).find('#table-horas-trabajadas');
+  
+        var rate = parseFloat(rate_data.text());
+        var hours = parseInt(worked_hours_data.text());
+  
+        $(this).find('.input-total').attr('value', '$' + rate*hours);
+      });
     }
   });
 </script>
