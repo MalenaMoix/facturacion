@@ -59,8 +59,8 @@
 <div class="div_concepts">
   <span>
     <p class="p_concepts"> Otros gastos: </p>
-    <textarea placeholder="Motivo" class="text_area_concepts" cols="80" rows="1"></textarea>
-    <textarea placeholder="Monto ($)" class="text_area_concepts_monto" cols="10" rows="1"></textarea>
+    <input placeholder="Motivo" class="input_concepts" name="input_concepts">
+    <input placeholder="Monto ($)" class="input_concepts_monto" name="input_concepts_monto">
   </span>
 </div>
 <br/>
@@ -164,13 +164,41 @@
       total += parseFloat(value);
     })
   
-    var other_concepts = $(document).find('.text_area_concepts_monto');
+    var other_concepts = $(document).find('.input_concepts_monto');
     var other_concepts_monto = other_concepts.val();
     if (other_concepts_monto.length != 0) {
       total += parseFloat(other_concepts_monto);
     }
   
-    $(document).find('.total_calculated').attr('value', '$' + total);
+    $(document).find('.total_calculated').attr('value', total);
+  
+  
+  
+  
+    $('input[name=total]').change(function() {
+      var tr = $(this).closest('tr');
+      var check = tr.find('input[type=checkbox]');
+  
+      if (check.is(":checked")){
+        var table_input_total = tr.find('.input-total');
+        var input_value = table_input_total.val();
+        total += parseFloat(input_value);
+      }
+  
+      $(document).find('.total_calculated').val(total);
+    });
+  
+  
+    $('input[name=input_concepts_monto]').change(function() {
+      var other_concepts = $(document).find('.input_concepts_monto');
+      var other_concepts_monto = other_concepts.val();
+  
+      if (other_concepts_monto.length != 0) {
+        total += parseFloat(other_concepts_monto);
+      }
+  
+      $(document).find('.total_calculated').val(total);
+    });
   });
   
   

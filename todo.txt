@@ -3,3 +3,5 @@
 // FIXME En la parte de otros gastos, validar si ingresa monto con $, por ahora solo anda si se ingresa el numero solo
 
 // FIXME Ver como bindear los inputs para que no se tenga que apretar el boton calcular total ante cada cambio 
+
+// FIXME Monto de otros gastos bindeados, pero se suma y suma, es decir, si si puse 100 y mi total queda en 1100 por ejemplo, pero me equivoque y quise poner 10, el total va a quedar en 1110
