@@ -43,13 +43,13 @@
     </tr>
     <% for @empleado in @empleados_facturation %>
       <tr class="data">
-        <td class="table-user-name" id="table-user-name"> <%= @empleado.user %> </td>
-        <td class="table-hour-rate" id="table-hour-rate"> <%= @empleado.hour_rate %> </td>
+        <td class="table-user-name" id="table-user-name"><%= @empleado.user %></td>
+        <td class="table-hour-rate" id="table-hour-rate"><%= @empleado.hour_rate %></td>
         <td class="table-horas-trabajadas" id="table-horas-trabajadas"></td>
-        <td class="table-comment" id="table-comment"> <%= @empleado.comment %> </td>
-        <td class="table-total" id="table-total"><input class="input-total" type="text" name="total" readonly></td>
-        <td class="table-checkbox" id="table-checkbox"> <input type="checkbox" id="population"></td>
-        <td class="table-log" id="table-log"> <input class="input-log" type="text" name="logged-by" readonly></td>
+        <td class="table-comment" id="table-comment"><%= @empleado.comment %></td>
+        <td class="table-total" id="table-total"><input class="input-total" type="number" name="total" readonly></td>
+        <td class="table-checkbox" id="table-checkbox"><input type="checkbox" id="population"></td>
+        <td class="table-log" id="table-log"><input class="input-log" type="text" name="logged-by" readonly></td>
       </tr>
     <% end %>
   </table>
@@ -60,15 +60,15 @@
   <span>
     <p class="p_concepts"> Otros gastos: </p>
     <input placeholder="Motivo" class="input_concepts" name="input_concepts">
-    <input placeholder="Monto ($)" class="input_concepts_monto" name="input_concepts_monto">
+    <input placeholder="Monto ($)" class="input_concepts_monto" name="input_concepts_monto" type="number">
   </span>
 </div>
 <br/>
 <!-- Monto total -->
 <div class="monto-total">
   <span class="span-monto-total">
-    <button class="button_compute_total"> Calcular Total </button>
-    <button class="button_total" disabled> Total: </button>
+    <button class="button_compute_total">Calcular Total</button>
+    <button class="button_total" disabled>Total:</button>
     <input class="total_calculated" name="total_calculated" readonly>
   </span>
 </div>
@@ -76,9 +76,9 @@
 <br/>
 <div class="buttons-facturacion">
   <span>
-    <button class="button-facturar"> Facturar </button>
-    <button class="button-guardar"> Guardar </button>
-    <button class="button-descargar-excel"> Descargar como Excel </button>
+    <button class="button-facturar">Facturar</button>
+    <button class="button-guardar">Guardar</button>
+    <button class="button-descargar-excel">Descargar como Excel</button>
   </span>
 </div>
 <script type="text/javascript">
