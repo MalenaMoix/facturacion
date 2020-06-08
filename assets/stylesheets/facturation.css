@@ -4,29 +4,6 @@
     width: 28%;
 }
 
-td {
-    text-align: center;
-    padding: 0;
-    margin: 0;
-    font-size: 10pt;
-    width: 30px;
-    padding: 0px 2px !important;
-    height: 18px;
-}
-
-th,
-td {
-    text-align: center;
-    vertical-align: middle;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-.population input {
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
 .population {
     border-collapse: collapse;
     width: 80%;
@@ -36,6 +13,19 @@ td {
     border-radius: 5px 5px 0 0;
     overflow: hidden;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.population input {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.population input[class="input-total"] {
+    border: none;
+}
+
+.population input[class="input-log"] {
+    border: none;
 }
 
 .population tbody tr {
@@ -58,7 +48,23 @@ td {
     width: fit-content;
 }
 
-.table-user-name {
+.population td {
+    font-size: 10pt;
+    width: 30px;
+    height: 18px;
+    text-align: center;
+    vertical-align: middle;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.population td[class="table-user-name"] {
+    width: 100px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.population th[class="persona"] {
     width: 100px;
     text-align: left;
     padding-left: 10px;
@@ -92,19 +98,19 @@ td {
 }
 
 p {
-    font-family: 'Segoe UI';
+    font-family: "Segoe UI";
     font-size: 14px;
 }
 
 label {
-    font-family: 'Segoe UI';
+    font-family: "Segoe UI";
     font-size: 14px;
 }
 
 textarea {
     background-color: transparent;
     resize: none;
-    font-family: 'Segoe UI';
+    font-family: "Segoe UI";
     font-size: 14px;
 }
 
@@ -182,7 +188,7 @@ textarea {
 
 .input-total {
     width: 90px;
-    text-align: left;
+    text-align: center;
     vertical-align: middle;
     background-color: transparent;
     border: none;
