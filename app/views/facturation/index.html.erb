@@ -1,17 +1,17 @@
+<%
+  now = DateTime.now
+  month_to_show = params[:month] ? DateTime.parse(params[:month]) : DateTime.new(now.year, now.month, 1)
+%>
+<% has_role = User.current.admin || User.current.roles_for_project(@project).include?(Role.find_by(:name => 'Jefe de proyecto')) %>
 <!-- Importacion del archivo css -->
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag 'facturation', :plugin => 'facturacion_proyecto', media: 'all' %>
 <% end %>
 <!-- Logo Folder IT -->
-<h2>Facturaci&oacute;n <%= @project %></h2>
+<h2>Facturaci&oacute;n de <%= @project %></h2>
 <div class="facturation-folder-logo">
   <%= image_tag('folder-it-logo-header-blog.png', :plugin => 'facturacion_proyecto') %>
 </div>
-<!-- params VER -->
-<%
-  now = DateTime.now
-  month_to_show = params[:month] ? DateTime.parse(params[:month]) : DateTime.new(now.year, now.month, 1)
-%>
 <!-- Comentarios -->
 <div>
   <p class="comment"><span>Comentarios sobre la facturaci&oacute;n del proyecto:</span><br/>
@@ -22,8 +22,8 @@
 </div>
 <!-- Fecha -->
 <div class="mes">
-  <label for="month">Mes/A&ntilde;o:</label>
-  <select name="month" id="month">
+  <label for="month">Mes:</label>
+  <select name="change_month" id="month">
     <% @months.each do |m| %>
       <option value="<%= DateTime.new(m.tyear, m.tmonth) %>"><%= m.month_name(m.tmonth) + '/' + m.tyear.to_s %></option>
     <% end %>
@@ -31,7 +31,6 @@
       <option value="<%= DateTime.new(now.year, now.month, 1) %>" selected><%= TimeEntry.month_name(now.month) + '/' + now.year.to_s %></option>
     <% end %>
   </select>
-  <p class="hidden-for-screen" id="hidden-month"></p>
 </div>
 <br/>
 <!-- Tabla facturacion -->
@@ -46,7 +45,7 @@
       <th>Editable</th>
       <th class="log">Log</th>
     </tr>
-    <% for empleado in @empleados_facturation %>
+    <% for empleado in @project_active_members %>
       <tr class="data">
         <td class="table-user-name" id="table-user-name"><%= empleado.user %></td>
         <td class="table-hour-rate" id="table-hour-rate"><%= empleado.hour_rate %></td>
@@ -86,6 +85,75 @@
     <button class="button-descargar-excel">Descargar como Excel</button>
   </span>
 </div>
+<script>
+  $(document).ready(function (<% @project_active_members %>) {
+  
+    getHours();
+    computeTableTotal();
+  
+    <% if has_role %>
+      initMonthChange();
+    <% end %>
+  
+  
+    function initMonthChange() {
+      var $month = $('#month');
+      $month.val('<%=DateTime.new(month_to_show.year, month_to_show.month) %>');
+      $month.bind('change', function () {
+        window.location.replace(/month/.test(window.location.search) ? getModifiedHref($month) : (window.location.href + '&month=' + $month.val().slice(0, 10)));
+      });
+      $('#hidden-month').text($month.children(":selected").text());
+    }
+  
+    function getModifiedHref($month) {
+      var currentLocation = window.location.href;
+      var n = currentLocation.indexOf("month=");
+      var i = currentLocation.indexOf("&project");
+      if(i>n){
+        return currentLocation.replace(currentLocation.substr(n, (i-n)), "month=" + $month.val().slice(0, 10));
+      }else{
+        return window.location.href.slice(0, -17) + '&month=' + $month.val().slice(0, 10);
+      }
+    }
+  
+  
+  
+    function getHours () {
+      var all_rows = $('.data');
+      employees_hours = [];
+  
+      <% @project_active_members.each do |empleado| %>
+        <% hours = 0.0 %>
+        <% time_entries = TimeEntry.where(:user_id => empleado.user_id, :project_id => empleado.project_id) %>
+  
+        <% for entry in time_entries %>
+          <%= hours += entry.hours %>
+        <% end %>
+        employees_hours.push('<%= hours %>');
+      <% end %>
+  
+      var index = 0;
+      all_rows.each(function () {
+        $(this).find('#table-horas-trabajadas').text(employees_hours[index]);
+        index++;
+      });
+    }
+  
+    function computeTableTotal() {
+      var all_rows = $('.data');
+  
+      all_rows.each(function () {
+        var rate_data = $(this).find('#table-hour-rate');
+        var worked_hours_data = $(this).find('#table-horas-trabajadas');
+  
+        var rate = parseFloat(rate_data.text());
+        var hours = parseInt(worked_hours_data.text());
+  
+        $(this).find('.input-total').attr('value', rate*hours);
+      });
+    }
+  });
+</script>
 <script type="text/javascript">
   $('table tr').click( function() {
     var tr = $(this).closest('tr');
@@ -105,50 +173,6 @@
       tr.find(".input-total").css('border', 'none');
       tr.find(".input-log").css('background-color', 'transparent');
       tr.find(".input-log").css('border', 'none');
-    }
-  });
-</script>
-<script>
-  $(document).ready(function (<% @empleados_facturation %>) {
-  
-    getHours();
-    computeTableTotal();
-  
-  
-    function getHours () {
-      var all_rows = $('.data');
-      employees_hours = [];
-  
-      <% @empleados_facturation.each do |empleado| %>
-        <% hours = 0.0 %>
-        <% time_entries = TimeEntry.where(:user_id => empleado.user_id, :project_id => empleado.project_id) %>
-  
-        <% for entry in time_entries %>
-          <%= hours += entry.hours %>
-        <% end %>
-        employees_hours.push('<%= hours %>');
-      <% end %>
-  
-      var index = 0;
-      all_rows.each(function () {
-        $(this).find('#table-horas-trabajadas').text(employees_hours[index]);
-        index++;
-      });
-    }
-  
-  
-    function computeTableTotal() {
-      var all_rows = $('.data');
-  
-      all_rows.each(function () {
-        var rate_data = $(this).find('#table-hour-rate');
-        var worked_hours_data = $(this).find('#table-horas-trabajadas');
-  
-        var rate = parseFloat(rate_data.text());
-        var hours = parseInt(worked_hours_data.text());
-  
-        $(this).find('.input-total').attr('value', rate*hours);
-      });
     }
   });
 </script>

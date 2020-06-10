@@ -8,4 +8,4 @@
 
 
 
-// TODO Filtrar la tabla de facturacion segun la fecha elegida. Actualmente se estan sumando los totales de todos los meses y de todos los miembros.
+// TODO Filtrar la tabla de facturacion segun la fecha elegida. Actualmente se estan sumando los totales del mes actual pero los time entries de un miembro se estan sumando de todos los meses que trabajo. Mismo problema que con la proforma, de que todavia no se crea un nuevo time entry si no que se trae y se actualiza el que ya existe.
