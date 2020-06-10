@@ -22,16 +22,16 @@
 </div>
 <!-- Fecha -->
 <div class="mes">
-    <label for="month">Mes/A&ntilde;o:</label>
-    <select name="change_month" id="month">
-      <% @months.each do |m| %>
-        <option value="<%= DateTime.new(m.tyear, m.tmonth) %>"><%= m.month_name(m.tmonth) + '/' + m.tyear.to_s %></option>
-      <% end %>
-      <% if @months.where(:tmonth => now.month, :tyear => now.year).length < 1 %>
-        <option value="<%= DateTime.new(now.year, now.month, 1) %>" selected><%= TimeEntry.month_name(now.month) + '/' + now.year.to_s %></option>
-      <% end %>
-    </select>
-    <p class="hidden-for-screen" id="hidden-month"></p>
+  <label for="month">Mes/A&ntilde;o:</label>
+  <select name="month" id="month">
+    <% @months.each do |m| %>
+      <option value="<%= DateTime.new(m.tyear, m.tmonth) %>"><%= m.month_name(m.tmonth) + '/' + m.tyear.to_s %></option>
+    <% end %>
+    <% if @months.where(:tmonth => now.month, :tyear => now.year).length < 1 %>
+      <option value="<%= DateTime.new(now.year, now.month, 1) %>" selected><%= TimeEntry.month_name(now.month) + '/' + now.year.to_s %></option>
+    <% end %>
+  </select>
+  <p class="hidden-for-screen" id="hidden-month"></p>
 </div>
 <br/>
 <!-- Tabla facturacion -->
