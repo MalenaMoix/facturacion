@@ -121,14 +121,11 @@
     function getHours () {
       var all_rows = $('.data');
       employees_hours = [];
+      <% fecha = params[:month] ? DateTime.parse(params[:month]) : DateTime.new(DateTime.now.year, DateTime.now.month, 1) %>
   
       <% @project_active_members.each do |empleado| %>
         <% hours = 0.0 %>
-        <% time_entries = TimeEntry.where(:user_id => empleado.user_id, :project_id => empleado.project_id) %>
-  
-        <% for entry in time_entries %>
-          <%= hours += entry.hours %>
-        <% end %>
+        <% hours = TimeEntry.where(user_id: empleado.user_id, project_id: empleado.project_id, tmonth: fecha.month, tyear: fecha.year).sum(&:hours) %>
         employees_hours.push('<%= hours %>');
       <% end %>
   
