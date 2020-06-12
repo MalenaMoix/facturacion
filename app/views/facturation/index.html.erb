@@ -2,7 +2,7 @@
   now = DateTime.now
   month_to_show = params[:month] ? DateTime.parse(params[:month]) : DateTime.new(now.year, now.month, 1)
 %>
-<% has_role = User.current.admin || User.current.roles_for_project(@project).include?(Role.find_by(:name => 'Jefe de proyecto')) %>
+<% has_role = User.current.admin || User.current.roles_for_project(@project).include?(Role.find_by(:name => 'Jefe de proyecto')) || User.current.roles_for_project(@project).include?(Role.find_by(:name => 'Administrativo Facturacion')) %>
 <!-- Importacion del archivo css -->
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag 'facturation', :plugin => 'facturacion_proyecto', media: 'all' %>
