@@ -35,4 +35,42 @@ class FacturationController < ApplicationController
       end
     end
   end
+
+
+   #TODO: 
+    def update_project_assigned_user_total_bill
+      flag = false
+      message = ''
+
+      params['rows'].each do |index, row|        
+        project_id = row[:projectId]
+        user_id = row[:employeeId]
+        total_bill = row[:input_total_bill]
+        log_comment = row[:log_comment]
+        user_name_modification = User.current.lastname + ' ' + User.current.firstname
+        last_date_modification = Date.current
+
+        employee_to_update = ProjectAssignedUser.where(:project_id => project_id, :user_id => user_id).first
+        employee_to_update.total = total_bill
+        employee_to_update.log = log_comment
+        employee_to_update.user_name_modification = user_name_modification
+        employee_to_update.last_date_modification = last_date_modification
+
+        if employee_to_update.save
+          flag = true
+        else
+          flag = false
+          break
+        end
+      end
+
+      if flag
+        message = "Se guardaron los cambios"
+      else
+        message = "Se produjo un error al intentar guardar los cambios"      
+      end
+      render json: {message: message}
+    end
+
+
 end

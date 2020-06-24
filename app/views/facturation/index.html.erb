@@ -42,18 +42,28 @@
       <th>Horas trabajadas</th>
       <th>Comentarios</th>
       <th>Total ($)</th>
-      <th>Editable</th>
+      <th>Editar</th>
       <th class="log">Log</th>
+      <th>Modificado por</th>
+      <th>Fecha</th>
     </tr>
     <% for empleado in @project_active_members %>
       <tr class="data">
-        <td class="table-user-name" id="table-user-name"><%= empleado.user %></td>
-        <td class="table-hour-rate" id="table-hour-rate"><%= empleado.hour_rate %></td>
+        
+        <input type="hidden" id="projectId" name="projectId" value="<%= empleado.project_id %>">
+        <input type="hidden" id="employeeId" name="employeeId" value="<%= empleado.user_id %>">
+        
+            
+        <td class="table-user-name" id="table-user-name"></td>
+        <td class="table-hour-rate" id="table-hour-rate"></td>
         <td class="table-horas-trabajadas" id="table-horas-trabajadas"></td>
-        <td class="table-comment" id="table-comment"><%= empleado.comment %></td>
-        <td class="table-total" id="table-total"><input class="input-total" type="number" name="total" readonly></td>
-        <td class="table-checkbox" id="table-checkbox"><input type="checkbox" id="population"></td>
-        <td class="table-log" id="table-log"><input class="input-log" type="text" name="logged-by" readonly></td>
+        <td class="table-comment" id="table-comment"></td>
+        <td class="table-total" id="table-total"><input id="input-total" class="input-total" type="number" name="total" readonly> </td>
+        <td class="table-checkbox" id="table-checkbox"><input type="checkbox" id="checkbox_editar"></td>
+        <td class="table-log" id="table-log"><input id="input-log" class="input-log" type="text" name="logged-by" readonly></td>
+        
+        <td class="table-user-name-modification" id="table-user-name-modification"></td>
+        <td class="table-last-date-modification" id="table-last-date-modification"></td>
       </tr>
     <% end %>
   </table>
@@ -89,7 +99,8 @@
   $(document).ready(function (<% @project_active_members %>) {
   
     getHours();
-    computeTableTotal();
+    calculateTotalBill();
+    //computeTableTotal();
   
     <% if has_role %>
       initMonthChange();
@@ -117,21 +128,53 @@
     }
   
   
-  
     function getHours () {
       var all_rows = $('.data');
       employees_hours = [];
+      employees_user = [];
+      employees_hour_rate = []
+      employees_comment = []
+      employees_total_bill = []
+      employees_log = []
+      employees_user_name_modification = []
+      employees_last_date_modification = []
+
       <% fecha = params[:month] ? DateTime.parse(params[:month]) : DateTime.new(DateTime.now.year, DateTime.now.month, 1) %>
   
       <% @project_active_members.each do |empleado| %>
         <% hours = 0.0 %>
         <% hours = TimeEntry.where(user_id: empleado.user_id, project_id: empleado.project_id, tmonth: fecha.month, tyear: fecha.year).sum(&:hours) %>
         employees_hours.push('<%= hours %>');
+        employees_user.push('<%= empleado.user %>');
+        employees_hour_rate.push('<%=empleado.hour_rate %>');
+        employees_comment.push('<%= empleado.comment %>');
+        employees_total_bill.push('<%= empleado.total %>');
+        employees_log.push('<%= empleado.log %>');
+        employees_user_name_modification.push('<%= empleado.user_name_modification %>');
+        employees_last_date_modification.push('<%= empleado.last_date_modification %>');
       <% end %>
   
       var index = 0;
       all_rows.each(function () {
         $(this).find('#table-horas-trabajadas').text(employees_hours[index]);
+
+        $(this).find('#table-user-name').text(employees_user[index]);
+        $(this).find('#table-hour-rate').text(employees_hour_rate[index]);
+        $(this).find('#table-comment').attr('value',employees_comment[index]);
+        $(this).find('#input-log').attr('value',employees_log[index]);
+        $(this).find('#table-user-name-modification').text(employees_user_name_modification[index]);
+        $(this).find('#table-last-date-modification').text(employees_last_date_modification[index]);
+
+        if(employees_total_bill[index]){
+          //if not null set value from db value
+          $(this).find('#input-total').attr('value', employees_total_bill[index]);
+        }else{
+          //if value is null so not load in db never before (invoice never save)
+          var rate = parseFloat(employees_hour_rate[index]);
+          var hours = parseInt(employees_hours[index]);
+          $(this).find('#input-total').attr('value', rate*hours);
+        }
+
         index++;
       });
     }
@@ -146,11 +189,33 @@
         var rate = parseFloat(rate_data.text());
         var hours = parseInt(worked_hours_data.text());
   
-        $(this).find('.input-total').attr('value', rate*hours);
+        $(this).find('#input-total').attr('value', rate*hours);
+        //$(this).find('#input-total').text(rate*hours);
       });
     }
+
+    function calculateTotalBill() {      
+      var all_rows = $('.data');
+      total_bill_table = 0.0
+      all_rows.each(function () {
+        total_bill_table += parseFloat($(this).find('.input-total').val());
+      })
+      others_amounts = $(document).find('.input_concepts_monto').val();
+      console.log(others_amounts);
+      if (others_amounts.length  != 0){
+        total_bill_table = total_bill_table + parseFloat(others_amounts);
+      }
+      $(document).find('.total_calculated').val(total_bill_table);      
+    }
+
+    //
+    $('.input-total').change( () => calculateTotalBill());
+    $('.input_concepts_monto').change( () => calculateTotalBill());
   });
 </script>
+
+
+
 <script type="text/javascript">
   $('table tr').click( function() {
     var tr = $(this).closest('tr');
@@ -173,10 +238,10 @@
     }
   });
 </script>
+
 <script type="text/javascript">
-  $(document).find('.button_total').hide();
-  $(document).find('.total_calculated').hide();
-  
+  //$(document).find('.button_total').hide();
+  //$(document).find('.total_calculated').hide();  
   $(document).on('click', '.button_compute_total', function computeTotal() {
     $(document).find('.button_total').show();
     $(document).find('.total_calculated').show();
@@ -201,9 +266,9 @@
   
   
   
-    $('input[name=total]').change(function() {
+    /*$('.input-total').change(function() {
       var tr = $(this).closest('tr');
-      var check = tr.find('input[type=checkbox]');
+      var check = tr.find('#checkbox_editar');
   
       if (check.is(":checked")){
         var table_input_total = tr.find('.input-total');
@@ -212,10 +277,10 @@
       }
   
       $(document).find('.total_calculated').val(total);
-    });
+    });*/
   
   
-    $('input[name=input_concepts_monto]').change(function() {
+    /*$('input[name=input_concepts_monto]').change(function() {
       var other_concepts = $(document).find('.input_concepts_monto');
       var other_concepts_monto = other_concepts.val();
   
@@ -224,7 +289,9 @@
       }
   
       $(document).find('.total_calculated').val(total);
-    });
+    });*/
+
+
   });
   
   
@@ -234,9 +301,43 @@
   
   });
   
-  $(document).on('click', '.button-guardar', function () {
-  
+
+  $(document).on('click', '.button-guardar', function() {
+
+    var all_rows = $('.data');
+    rows = [];
+    all_rows.each(function(index){
+      var employeeId = $(this).find('#employeeId').val();
+      var projectId = $(this).find('#projectId').val();
+      var input_total_bill = $(this).find('#input-total').val();
+      var log_comment = $(this).find('#input-log').val();
+      console.log(employeeId);
+      console.log(projectId);
+      console.log(input_total_bill);
+      console.log(log_comment);
+      var $row = $(index);
+      rows.push(
+          {employeeId:employeeId, projectId:projectId, input_total_bill : input_total_bill, log_comment : log_comment}
+      );      
+    });
+    console.log(rows);
+    $.ajax({
+      url: 'facturacion/update_project_assigned_user_total_bill',
+      type: 'PUT',
+      data: {rows},}) 
+        .done(function(message) {
+          var message = message.message;
+          alert(message);
+        })
+        .fail(function(jqXHR, textStatus, error) {
+          alert("Status: " + textStatus + ". Error: " + error);
+        });
+     
+    //TODO: 
+    //$(this).parents('tr').remove();
+    //location.reload();
   });
+
   
   $(document).on('click', '.button-descargar-excel', function () {
   
