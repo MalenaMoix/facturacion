@@ -16,7 +16,7 @@
 <div>
   <p class="comment"><span>Comentarios sobre la facturaci&oacute;n del proyecto:</span><br/>
     <br/>
-    <textarea class="comment" id="facturation_comments" cols="100" rows="3"></textarea>
+    <textarea class="facturation_comments" id="facturation_comments" cols="100" rows="3"></textarea>
   </p>
   <br/>
 </div>
@@ -59,7 +59,7 @@
         <td class="table-horas-trabajadas" id="table-horas-trabajadas"></td>
         <td class="table-comment" id="table-comment"></td>
         <td class="table-total" id="table-total"><input id="input-total" class="input-total" type="number" name="total" readonly> </td>
-        <td class="table-checkbox" id="table-checkbox"><input type="checkbox" id="checkbox_editar"></td>
+        <td class="table-checkbox" id="table-checkbox"><input type="checkbox" class="checkbox_editar" id="checkbox_editar"></td>
         <td class="table-log" id="table-log"><input id="input-log" class="input-log" type="text" name="logged-by" readonly></td>
         
         <td class="table-user-name-modification" id="table-user-name-modification"></td>
@@ -73,15 +73,15 @@
 <div class="div_concepts">
   <span>
     <p class="p_concepts"> Otros gastos: </p>
-    <input placeholder="Motivo" class="input_concepts" name="input_concepts">
-    <input placeholder="Monto ($)" class="input_concepts_monto" name="input_concepts_monto" type="number">
+    <input placeholder="Motivo" class="input_concepts" id="input_concepts" name="input_concepts">
+    <input placeholder="Monto ($)" class="input_concepts_monto"   id="input_concepts_monto" name="input_concepts_monto" type="number">
   </span>
 </div>
 <br/>
 <!-- Monto total -->
 <div class="monto-total">
   <span class="span-monto-total">
-    <button class="button_compute_total">Calcular Total</button>
+    <!--<button class="button_compute_total">Calcular Total</button>-->
     <button class="button_total" disabled>Total:</button>
     <input class="total_calculated" name="total_calculated" readonly>
   </span>
@@ -138,6 +138,10 @@
       employees_log = []
       employees_user_name_modification = []
       employees_last_date_modification = []
+      
+      input_concepts = [];
+      input_concepts_monto = [];
+      facturation_comments = [];
 
       <% fecha = params[:month] ? DateTime.parse(params[:month]) : DateTime.new(DateTime.now.year, DateTime.now.month, 1) %>
   
@@ -152,9 +156,18 @@
         employees_log.push('<%= empleado.log %>');
         employees_user_name_modification.push('<%= empleado.user_name_modification %>');
         employees_last_date_modification.push('<%= empleado.last_date_modification %>');
+
+        input_concepts.push('<%= empleado.other_amounts_comments %>');
+        input_concepts_monto.push('<%= empleado.other_amount_bill %>');
+        facturation_comments.push('<%= empleado.general_comments %>');
       <% end %>
+
   
       var index = 0;
+        $(document).find('#input_concepts').attr('value',input_concepts[0]);
+        $(document).find('#input_concepts_monto').attr('value',input_concepts_monto[0]);
+        $(document).find('#facturation_comments').text(facturation_comments[0]);
+
       all_rows.each(function () {
         $(this).find('#table-horas-trabajadas').text(employees_hours[index]);
 
@@ -311,13 +324,23 @@
       var projectId = $(this).find('#projectId').val();
       var input_total_bill = $(this).find('#input-total').val();
       var log_comment = $(this).find('#input-log').val();
+      var input_concepts = $(document).find('#input_concepts').val();
+      var input_concepts_monto = $(document).find('#input_concepts_monto').val();
+      var facturation_comments = $(document).find('#facturation_comments').val();
+      var checkbox_editar = $(this).find('#checkbox_editar').attr('checked');
+
       console.log(employeeId);
       console.log(projectId);
       console.log(input_total_bill);
       console.log(log_comment);
+      console.log(input_concepts);
+      console.log(input_concepts_monto);
+      console.log(facturation_comments);
+      console.log(checkbox_editar);
+
       var $row = $(index);
       rows.push(
-          {employeeId:employeeId, projectId:projectId, input_total_bill : input_total_bill, log_comment : log_comment}
+          {employeeId:employeeId, projectId:projectId, input_total_bill : input_total_bill, log_comment : log_comment, input_concepts: input_concepts,input_concepts_monto:input_concepts_monto,facturation_comments:facturation_comments, checkbox_editar: checkbox_editar }
       );      
     });
     console.log(rows);
