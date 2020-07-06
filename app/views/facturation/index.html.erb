@@ -90,7 +90,13 @@
 <br/>
 <div class="buttons-facturacion">
   <span>
-    <button class="button-facturar">Facturar</button>
+    <!--<button class="button-facturar">Facturar</button>-->
+    <label> ¿Bloquear Factura? 
+        <input type="checkbox" class="checkbox_bloqueado" id="checkbox_bloqueado"/> 
+    </label> 
+    <label id='last_modification_date_bloqueado' class='last_modification_date_bloqueado'>     
+    </label> 
+
     <button class="button-guardar">Guardar</button>
     <button class="button-descargar-excel">Descargar como Excel</button>
   </span>
@@ -143,6 +149,10 @@
       input_concepts_monto = [];
       facturation_comments = [];
 
+      last_modification_date_bloqueado = []
+      user_name_last_mod = []
+      bloqueado = []
+
       <% fecha = params[:month] ? DateTime.parse(params[:month]) : DateTime.new(DateTime.now.year, DateTime.now.month, 1) %>
   
       <% @project_active_members.each do |empleado| %>
@@ -156,17 +166,43 @@
         employees_log.push('<%= empleado.log %>');
         employees_user_name_modification.push('<%= empleado.user_name_modification %>');
         employees_last_date_modification.push('<%= empleado.last_date_modification %>');
+        
 
         input_concepts.push('<%= empleado.other_amounts_comments %>');
         input_concepts_monto.push('<%= empleado.other_amount_bill %>');
         facturation_comments.push('<%= empleado.general_comments %>');
+
+        last_modification_date_bloqueado.push('<%= empleado.last_modification_date_bloqueado %>');
+        user_name_last_mod.push('<%= empleado.user_name_last_mod %>');
+        bloqueado.push('<%= empleado.bloqueado %>');
+
       <% end %>
 
   
       var index = 0;
-        $(document).find('#input_concepts').attr('value',input_concepts[0]);
-        $(document).find('#input_concepts_monto').attr('value',input_concepts_monto[0]);
-        $(document).find('#facturation_comments').text(facturation_comments[0]);
+      $(document).find('#input_concepts').attr('value',input_concepts[0]);
+      $(document).find('#input_concepts_monto').attr('value',input_concepts_monto[0]);
+      $(document).find('#facturation_comments').text(facturation_comments[0]);
+
+      $(document).find('#last_modification_date_bloqueado').html('Ultima modificación: ' + last_modification_date_bloqueado[0] +' - '+ user_name_last_mod[0] );
+      console.log('load data');
+      console.log(last_modification_date_bloqueado[0]);
+
+      if (bloqueado[0]){//if bloqueado true
+        console.log('bloquedado true');
+        $(document).find('#checkbox_bloqueado').attr('checked','checked');        
+        $(document).find('#input_concepts').attr("disabled", true);
+        $(document).find('#input_concepts_monto').attr("disabled", true);
+        $(document).find('#facturation_comments').attr("disabled", true);
+
+      } else {
+        console.log('bloqueado false');
+      }
+      //$(document).find('#checkbox_bloqueado').attr('checked',bloqueado[0]);
+
+
+
+
 
       all_rows.each(function () {
         $(this).find('#table-horas-trabajadas').text(employees_hours[index]);
@@ -177,6 +213,10 @@
         $(this).find('#input-log').attr('value',employees_log[index]);
         $(this).find('#table-user-name-modification').text(employees_user_name_modification[index]);
         $(this).find('#table-last-date-modification').text(employees_last_date_modification[index]);
+
+        if (bloqueado[index]){
+          $(this).find('#checkbox_editar').attr("disabled", true);
+        }
 
         if(employees_total_bill[index]){
           //if not null set value from db value
@@ -310,8 +350,25 @@
   
   
   //TODO en un futuro cercano
-  $(document).on('click', '.button-facturar', function () {
-  
+  $(document).on('click', '#checkbox_bloqueado', function () {
+
+    var checkbox_bloqueado = $(document).find('#checkbox_bloqueado').attr('checked');
+    var all_rows = $('.data');
+    if (checkbox_bloqueado){
+      $(document).find('#facturation_comments').attr("disabled", true);
+      $(document).find('#input_concepts_monto').attr("disabled", true);
+      $(document).find('#input_concepts').attr("disabled", true);
+      all_rows.each(function(index){
+        $(this).find('#checkbox_editar').attr("disabled", true);
+      });      
+    }else{
+      $(document).find('#facturation_comments').removeAttr("disabled");
+      $(document).find('#input_concepts_monto').removeAttr("disabled");
+      $(document).find('#input_concepts').removeAttr("disabled");
+      all_rows.each(function(index){
+        $(this).find('#checkbox_editar').removeAttr("disabled");
+      });
+    }      
   });
   
 
@@ -328,6 +385,7 @@
       var input_concepts_monto = $(document).find('#input_concepts_monto').val();
       var facturation_comments = $(document).find('#facturation_comments').val();
       var checkbox_editar = $(this).find('#checkbox_editar').attr('checked');
+      var checkbox_bloqueado = $(document).find('#checkbox_bloqueado').attr('checked');
 
       console.log(employeeId);
       console.log(projectId);
@@ -337,10 +395,11 @@
       console.log(input_concepts_monto);
       console.log(facturation_comments);
       console.log(checkbox_editar);
+      console.log(checkbox_bloqueado);
 
       var $row = $(index);
       rows.push(
-          {employeeId:employeeId, projectId:projectId, input_total_bill : input_total_bill, log_comment : log_comment, input_concepts: input_concepts,input_concepts_monto:input_concepts_monto,facturation_comments:facturation_comments, checkbox_editar: checkbox_editar }
+          {employeeId:employeeId, projectId:projectId, input_total_bill : input_total_bill, log_comment : log_comment, input_concepts: input_concepts,input_concepts_monto:input_concepts_monto,facturation_comments:facturation_comments, checkbox_editar: checkbox_editar, checkbox_bloqueado: checkbox_bloqueado }
       );      
     });
     console.log(rows);
