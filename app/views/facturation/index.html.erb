@@ -20,6 +20,15 @@
   </p>
   <br/>
 </div>
+<% var2 = Setting.plugin_proforma['block_'+@project[:id].to_s+'']
+       blocked_until = var2.to_s.strip.empty? ? DateTime.new(2014, 1, 1) : DateTime.strptime(var2, '%Y-%m-%d') 
+       date_time_end_day_current_month = Date.today.end_of_month
+       
+       %>
+
+<% if blocked_until < date_time_end_day_current_month %>
+  <strong  class="label danger" style="color:red;">Proforma no verificada hasta final de período. Última fecha verificada: <%= blocked_until.strftime('%Y-%m-%d') %>. </strong>
+<% end%>
 <!-- Fecha -->
 <div class="mes">
   <label for="month">Mes:</label>
@@ -69,6 +78,8 @@
   </table>
 </div>
 <br/>
+
+
 <!-- Other concepts -->
 <div class="div_concepts">
   <span>
@@ -77,7 +88,14 @@
     <input placeholder="Monto ($)" class="input_concepts_monto"   id="input_concepts_monto" name="input_concepts_monto" type="number">
   </span>
 </div>
+
+
+
+
+
 <br/>
+
+
 <!-- Monto total -->
 <div class="monto-total">
   <span class="span-monto-total">
@@ -88,6 +106,8 @@
 </div>
 <br/>
 <br/>
+
+<% if blocked_until >= date_time_end_day_current_month %>
 <div class="buttons-facturacion">
   <span>
     <!--<button class="button-facturar">Facturar</button>-->
@@ -97,10 +117,11 @@
     <label id='last_modification_date_bloqueado' class='last_modification_date_bloqueado'>     
     </label> 
 
-    <button class="button-guardar">Guardar</button>
-    <button class="button-descargar-excel">Descargar como Excel</button>
+    <button class="button-guardar" id="button-guardar">Guardar</button>
+    <button class="button-descargar-excel" id="button-descargar-excel">Descargar como Excel</button>
   </span>
 </div>
+<%end%>
 <script>
   $(document).ready(function (<% @project_active_members %>) {
   
@@ -153,8 +174,19 @@
       user_name_last_mod = []
       bloqueado = []
 
+      
+      
+      <% @project_facturations.each do |fact| %>
+        input_concepts.push('<%= fact.comentario %>');
+        input_concepts_monto.push('<%= fact.otro_gasto %>');
+        bloqueado.push('<%= fact.bloqueado %>');
+        last_modification_date_bloqueado.push('<%= fact.last_modification_date_bloqueado %>');
+        user_name_last_mod.push('<%= fact.user_name_last_mod %>');
+      <% end %>
+
       <% fecha = params[:month] ? DateTime.parse(params[:month]) : DateTime.new(DateTime.now.year, DateTime.now.month, 1) %>
-  
+
+
       <% @project_active_members.each do |empleado| %>
         <% hours = 0.0 %>
         <% hours = TimeEntry.where(user_id: empleado.user_id, project_id: empleado.project_id, tmonth: fecha.month, tyear: fecha.year).sum(&:hours) %>
@@ -166,22 +198,18 @@
         employees_log.push('<%= empleado.log %>');
         employees_user_name_modification.push('<%= empleado.user_name_modification %>');
         employees_last_date_modification.push('<%= empleado.last_date_modification %>');
-        
-
-        input_concepts.push('<%= empleado.other_amounts_comments %>');
-        input_concepts_monto.push('<%= empleado.other_amount_bill %>');
+      
         facturation_comments.push('<%= empleado.general_comments %>');
 
-        last_modification_date_bloqueado.push('<%= empleado.last_modification_date_bloqueado %>');
-        user_name_last_mod.push('<%= empleado.user_name_last_mod %>');
-        bloqueado.push('<%= empleado.bloqueado %>');
+        
+        
 
       <% end %>
 
   
       var index = 0;
-      $(document).find('#input_concepts').attr('value',input_concepts[0]);
-      $(document).find('#input_concepts_monto').attr('value',input_concepts_monto[0]);
+      $(document).find('#input_concepts').attr('value',input_concepts);
+      $(document).find('#input_concepts_monto').attr('value',input_concepts_monto);
       $(document).find('#facturation_comments').text(facturation_comments[0]);
 
       $(document).find('#last_modification_date_bloqueado').html('Ultima modificación: ' + last_modification_date_bloqueado[0] +' - '+ user_name_last_mod[0] );
@@ -214,7 +242,7 @@
         $(this).find('#table-user-name-modification').text(employees_user_name_modification[index]);
         $(this).find('#table-last-date-modification').text(employees_last_date_modification[index]);
 
-        if (bloqueado[index]){
+        if (bloqueado[0]){
           $(this).find('#checkbox_editar').attr("disabled", true);
         }
 
@@ -386,6 +414,7 @@
       var facturation_comments = $(document).find('#facturation_comments').val();
       var checkbox_editar = $(this).find('#checkbox_editar').attr('checked');
       var checkbox_bloqueado = $(document).find('#checkbox_bloqueado').attr('checked');
+      var month_val = $(document).find('#month').val();
 
       console.log(employeeId);
       console.log(projectId);
@@ -396,10 +425,11 @@
       console.log(facturation_comments);
       console.log(checkbox_editar);
       console.log(checkbox_bloqueado);
+      console.log(month_val);
 
       var $row = $(index);
       rows.push(
-          {employeeId:employeeId, projectId:projectId, input_total_bill : input_total_bill, log_comment : log_comment, input_concepts: input_concepts,input_concepts_monto:input_concepts_monto,facturation_comments:facturation_comments, checkbox_editar: checkbox_editar, checkbox_bloqueado: checkbox_bloqueado }
+          {employeeId:employeeId, projectId:projectId, input_total_bill : input_total_bill, log_comment : log_comment, input_concepts: input_concepts,input_concepts_monto:input_concepts_monto,facturation_comments:facturation_comments, checkbox_editar: checkbox_editar, checkbox_bloqueado: checkbox_bloqueado, month_val: month_val }
       );      
     });
     console.log(rows);
