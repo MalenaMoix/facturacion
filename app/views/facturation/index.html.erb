@@ -20,7 +20,7 @@
   </p>
   <br/>
 </div>
-<% var2 = Setting.plugin_proforma['block_'+@project[:id].to_s+'']
+<% var2 = Setting.plugin_proformanext['block_'+@project[:id].to_s+'']
        blocked_until = var2.to_s.strip.empty? ? DateTime.new(2014, 1, 1) : DateTime.strptime(var2, '%Y-%m-%d') 
        date_time_end_day_current_month = Date.today.end_of_month
        

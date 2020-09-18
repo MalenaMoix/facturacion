@@ -6,7 +6,8 @@ Redmine::Plugin.register :facturacion_proyecto do
 
   project_module :facturacion_proyecto do
     permission :view_facturacion, :facturation => :index
+    permission :administrativo_facturacion, :facturation => :administrativo_facturacion
   end
 
-  menu :project_menu, :facturation, { :controller => 'facturation', :action => 'index' }, :caption => 'Facturacion proyecto', :after => :proforma, :param => :project_id
+  menu :project_menu, :facturation, { :controller => 'facturation', :action => 'index' }, :caption => 'Facturacion proyecto', :after => :proformanext, :param => :project_id
 end
